@@ -1,177 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notes</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80' fill='white'>N</text></svg>'>">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a, #2b1a3a);
-      color: #fff;
-      position: relative;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80' fill='white'>N</text></svg>'>">
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #2b1a3a);
+    color: #fff;
+    position: relative;
+    min-height: 100vh;
+  }
 
-    h1 {
-      text-align: center;
-      margin: 20px 0;
-      text-shadow: 1px 1px 5px #000;
-    }
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 1px 1px 5px #000;
+  }
 
-    .notes-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: 40px auto;
-    }
+  .top-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    .subject-card {
-      background: rgba(0,0,0,0.5);
-      border-radius: 15px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.7);
-      transition: transform 0.2s, background 0.2s;
-    }
+  .top-buttons button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
 
-    .subject-card:hover {
-      transform: translateY(-5px);
-      background: rgba(50,50,50,0.7);
-    }
+  .top-buttons button:hover {
+    background: rgba(50,50,50,0.8);
+    transform: translateY(-2px);
+  }
 
-    .subject-card h2 {
-      margin: 0;
-      text-align: center;
-    }
+  .notes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 100px auto 40px auto; /* add top margin to avoid top-buttons */
+  }
 
-    textarea {
-      width: 100%;
-      height: 200px;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      border-radius: 10px;
-      padding: 10px;
-      color: #fff;
-      resize: vertical;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
+  .subject-card {
+    background: rgba(0,0,0,0.5);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+    transition: transform 0.2s, background 0.2s;
+  }
 
-    textarea:focus {
-      outline: 2px solid #fff;
-    }
+  .subject-card:hover {
+    transform: translateY(-5px);
+    background: rgba(50,50,50,0.7);
+  }
 
-    #saveButton {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.7);
-      transition: background 0.2s, transform 0.2s;
-    }
+  .subject-card h2 {
+    margin: 0;
+    text-align: center;
+  }
 
-    #saveButton:hover {
-      background: rgba(50,50,50,0.8);
-      transform: translateY(-2px);
-    }
-  </style>
+  textarea {
+    width: 100%;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+    resize: vertical;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  textarea:focus {
+    outline: 2px solid #fff;
+  }
+
+  #saveButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 5px 10px; /* same size as Import */
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  #saveButton:hover {
+    background: rgba(50,50,50,0.8);
+    transform: translateY(-2px);
+  }
+</style>
 </head>
 <body>
-  <h1>Notes</h1>
-  <div class="notes-container">
-    <div class="subject-card">
-      <h2>Accounting</h2>
-      <textarea placeholder="Write notes here..." id="Accounting"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Law</h2>
-      <textarea placeholder="Write notes here..." id="Law"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Income Tax</h2>
-      <textarea placeholder="Write notes here..." id="IncomeTax"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>GST</h2>
-      <textarea placeholder="Write notes here..." id="GST"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Audit</h2>
-      <textarea placeholder="Write notes here..." id="Audit"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Costing</h2>
-      <textarea placeholder="Write notes here..." id="Costing"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Financial Management</h2>
-      <textarea placeholder="Write notes here..." id="FinancialManagement"></textarea>
-    </div>
-    <div class="subject-card">
-      <h2>Strategic Management</h2>
-      <textarea placeholder="Write notes here..." id="StrategicManagement"></textarea>
-    </div>
+
+<h1>Notes</h1>
+
+<div class="top-buttons">
+  <button id="exportButton">Export</button>
+  <button id="importButton">Import</button>
+</div>
+
+<div class="notes-container">
+  <div class="subject-card">
+    <h2>Accounting</h2>
+    <textarea placeholder="Write notes here..." id="Accounting"></textarea>
   </div>
+  <div class="subject-card">
+    <h2>Law</h2>
+    <textarea placeholder="Write notes here..." id="Law"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>Income Tax</h2>
+    <textarea placeholder="Write notes here..." id="IncomeTax"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>GST</h2>
+    <textarea placeholder="Write notes here..." id="GST"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>Audit</h2>
+    <textarea placeholder="Write notes here..." id="Audit"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>Costing</h2>
+    <textarea placeholder="Write notes here..." id="Costing"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>Financial Management</h2>
+    <textarea placeholder="Write notes here..." id="FinancialManagement"></textarea>
+  </div>
+  <div class="subject-card">
+    <h2>Strategic Management</h2>
+    <textarea placeholder="Write notes here..." id="StrategicManagement"></textarea>
+  </div>
+</div>
 
-  <button id="saveButton">Save All</button>
+<button id="saveButton">Save All</button>
 
-  <!-- Firebase integration -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBy98kisTApfXa3vWFlUpRB_QAr83VzRqE",
-      authDomain: "mynotesproject-e1e30.firebaseapp.com",
-      projectId: "mynotesproject-e1e30",
-      storageBucket: "mynotesproject-e1e30.firebasestorage.app",
-      messagingSenderId: "498168177749",
-      appId: "1:498168177749:web:f61a75176a86715b97a0dc"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+<script>
+  const subjects = ["Accounting","Law","IncomeTax","GST","Audit","Costing","FinancialManagement","StrategicManagement"];
 
-    const subjects = {
-      Accounting: "accounting",
-      Law: "law",
-      IncomeTax: "income-tax",
-      GST: "gst",
-      Audit: "audit",
-      Costing: "costing",
-      FinancialManagement: "financial-management",
-      StrategicManagement: "strategic-management"
-    };
-
-    window.onload = async () => {
-      for (const [key, docId] of Object.entries(subjects)) {
-        const docRef = db.collection("GitFiles").doc(docId);
-        const docSnap = await docRef.get();
-        const textarea = document.getElementById(key);
-        if (docSnap.exists) {
-          textarea.value = docSnap.data().content || "";
-        }
-      }
-    };
-
-    document.getElementById('saveButton').addEventListener('click', async () => {
-      for (const [key, docId] of Object.entries(subjects)) {
-        const textarea = document.getElementById(key);
-        await db.collection("GitFiles").doc(docId).set({ content: textarea.value });
-      }
-      alert('All notes saved to cloud!');
+  // Save All button
+  document.getElementById('saveButton').addEventListener('click', () => {
+    subjects.forEach(sub => {
+      const notes = document.getElementById(sub).value;
+      localStorage.setItem(sub, notes);
     });
-  </script>
+    alert('All notes saved locally!');
+  });
+
+  // Load saved notes on page load
+  window.onload = () => {
+    subjects.forEach(sub => {
+      const saved = localStorage.getItem(sub);
+      if(saved) document.getElementById(sub).value = saved;
+    });
+  };
+
+  // Export button
+  document.getElementById('exportButton').addEventListener('click', () => {
+    const data = {};
+    subjects.forEach(sub => { data[sub] = document.getElementById(sub).value; });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'notes_export.json';
+    a.click();
+  });
+
+  // Import button
+  document.getElementById('importButton').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = event => {
+        const data = JSON.parse(event.target.result);
+        subjects.forEach(sub => {
+          if(data[sub]) document.getElementById(sub).value = data[sub];
+        });
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  });
+</script>
+
 </body>
 </html>
