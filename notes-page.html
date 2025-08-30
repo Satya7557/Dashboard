@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notes</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80' fill='white'>N</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80' fill='white'>N</text></svg>'>">
   <style>
     body, html {
       margin: 0;
@@ -128,25 +128,49 @@
 
   <button id="saveButton">Save All</button>
 
+  <!-- Firebase integration -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script>
-    const subjects = ["Accounting", "Law", "IncomeTax", "GST", "Audit", "Costing", "FinancialManagement", "StrategicManagement"];
+    const firebaseConfig = {
+      apiKey: "AIzaSyBy98kisTApfXa3vWFlUpRB_QAr83VzRqE",
+      authDomain: "mynotesproject-e1e30.firebaseapp.com",
+      projectId: "mynotesproject-e1e30",
+      storageBucket: "mynotesproject-e1e30.firebasestorage.app",
+      messagingSenderId: "498168177749",
+      appId: "1:498168177749:web:f61a75176a86715b97a0dc"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // Load saved notes from localStorage
-    subjects.forEach(sub => {
-      const textarea = document.getElementById(sub);
-      if(localStorage.getItem(sub)) {
-        textarea.value = localStorage.getItem(sub);
+    const subjects = {
+      Accounting: "accounting",
+      Law: "law",
+      IncomeTax: "income-tax",
+      GST: "gst",
+      Audit: "audit",
+      Costing: "costing",
+      FinancialManagement: "financial-management",
+      StrategicManagement: "strategic-management"
+    };
+
+    window.onload = async () => {
+      for (const [key, docId] of Object.entries(subjects)) {
+        const docRef = db.collection("GitFiles").doc(docId);
+        const docSnap = await docRef.get();
+        const textarea = document.getElementById(key);
+        if (docSnap.exists) {
+          textarea.value = docSnap.data().content || "";
+        }
       }
-    });
+    };
 
-    // Save all notes on button click
-    const saveButton = document.getElementById('saveButton');
-    saveButton.addEventListener('click', () => {
-      subjects.forEach(sub => {
-        const textarea = document.getElementById(sub);
-        localStorage.setItem(sub, textarea.value);
-      });
-      alert('All notes saved!');
+    document.getElementById('saveButton').addEventListener('click', async () => {
+      for (const [key, docId] of Object.entries(subjects)) {
+        const textarea = document.getElementById(key);
+        await db.collection("GitFiles").doc(docId).set({ content: textarea.value });
+      }
+      alert('All notes saved to cloud!');
     });
   </script>
 </body>
