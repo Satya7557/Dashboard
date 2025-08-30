@@ -3,122 +3,671 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Layout</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='purple'/><text x='50' y='60' font-size='60' text-anchor='middle' fill='white'>D</text></svg>">
+  <title>Productivity Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body, html {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body, html {
       width: 100%;
       height: 100%;
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
+      background: #000;
       color: #fff;
+      overflow-x: hidden;
     }
 
-    .parallax {
+    /* Intro page with animation */
+    .intro-page {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('159Z_2107.w026.n002.628B.p1.628.jpg') center/cover no-repeat;
-      background-attachment: fixed;
-      z-index: -2;
-      filter: brightness(0.5) contrast(1.2);
-    }
-
-    .parallax::after {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%),
-                  radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
-      animation: moveBg 30s linear infinite;
-    }
-
-    @keyframes moveBg {
-      0% { transform: translate(0,0); }
-      50% { transform: translate(100px, 100px); }
-      100% { transform: translate(0,0); }
-    }
-
-    main {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 60px 20px;
-      gap: 50px;
+      justify-content: center;
+      background: #000;
+      z-index: 100;
+      transition: transform 1s ease-in-out;
+      overflow: hidden;
     }
 
-    .hero-box {
-      width: 95%;
-      max-width: 1400px;
-      height: 220px;
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .intro-page h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      z-index: 1;
+      margin: 0;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .intro-page p {
+      font-size: clamp(1rem, 4vw, 1.5rem);
+      margin-top: 20px;
+      z-index: 1;
+      opacity: 0.8;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    /* Main dashboard */
+    main {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 60px 20px;
+      background: #000;
+      transform: translateY(100vh);
+      transition: transform 1s ease-in-out;
+      position: relative;
+      z-index: 10;
+    }
+
+    .dashboard-section {
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+      background: linear-gradient(to right, #a8ff78, #78ffd6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    /* Notes dashboard */
+    .notes-dashboard {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 3rem;
-      font-weight: bold;
-      border-radius: 30px;
-      background: rgba(0,0,0,0.6);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,255,0.1) inset, 0 10px 50px rgba(0,0,0,0.9);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.3);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .hero-box:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 35px 80px rgba(0,0,0,0.8), 0 0 25px rgba(255,255,255,0.15) inset, 0 15px 60px rgba(0,0,0,0.95);
-    }
-
-    .container {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
+      gap: 40px;
       flex-wrap: wrap;
+      margin-bottom: 60px;
     }
 
     .box {
-      width: 220px;
-      height: 220px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 25px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,255,0.05) inset, 0 10px 40px rgba(0,0,0,0.8);
-      transition: transform 0.3s, box-shadow 0.3s;
       backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.3);
-      text-decoration: none;
-      color: #fff;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .box:hover {
-      transform: translateY(-10px) scale(1.07);
-      box-shadow: 0 35px 80px rgba(0,0,0,0.85), 0 0 25px rgba(255,255,255,0.1) inset, 0 15px 60px rgba(0,0,0,0.95);
+    /* Ripple effect */
+    .box::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .box:hover::after,
+    .box:focus::after {
+      opacity: 1;
+    }
+
+    .box:hover,
+    .box:focus {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+    }
+
+    /* Focus indicator for keyboard navigation */
+    .box:focus {
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 15px 40px rgba(0,0,0,0.7);
+    }
+
+    /* Links dashboard */
+    .links-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .link-row {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      width: 280px;
+      height: 220px;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, #00b4db, #0083b0);
+    }
+
+    .link-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .youtube::before {
+      background: linear-gradient(to right, #ff0000, #cc0000);
+    }
+
+    .whatsapp::before {
+      background: linear-gradient(to right, #25d366, #128c7e);
+    }
+
+    .discord::before {
+      background: linear-gradient(to right, #5865f2, #7289da);
+    }
+
+    .spotify::before {
+      background: linear-gradient(to right, #1db954, #1ed760);
+    }
+
+    .chatgpt::before {
+      background: linear-gradient(to right, #74aa9c, #00a67e);
+    }
+
+    .deepseek::before {
+      background: linear-gradient(to right, #3a7bd5, #00d2ff);
+    }
+
+    .icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .link-card:hover .icon {
+      transform: scale(1.2);
+    }
+
+    .youtube .icon {
+      color: #ff0000;
+    }
+
+    .whatsapp .icon {
+      color: #25d366;
+    }
+
+    .discord .icon {
+      color: #5865f2;
+    }
+
+    .spotify .icon {
+      color: #1db954;
+    }
+
+    .chatgpt .icon {
+      color: #74aa9c;
+    }
+
+    .deepseek .icon {
+      color: #3a7bd5;
+    }
+
+    .link-card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    .link-card p {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Live background for dashboard */
+    .live-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      background: linear-gradient(45deg, #000000, #0a0a0a, #131313);
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      animation: float 15s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translate(20px, 40px) scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    .pulse {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: pulse 8s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.1;
+      }
+    }
+
+    /* Loading animation */
+    .loading-dots {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 20px;
+      margin-top: 20px;
+    }
+
+    .loading-dots div {
+      position: absolute;
+      top: 0;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #fff;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+      opacity: 0.6;
+    }
+
+    .loading-dots div:nth-child(1) {
+      left: 8px;
+      animation: loading-dots1 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(2) {
+      left: 8px;
+      animation: loading-dots2 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(3) {
+      left: 32px;
+      animation: loading-dots2 0.6s infinite;
+    }
+
+    .loading-dots div:nth-child(4) {
+      left: 56px;
+      animation: loading-dots3 0.6s infinite;
+    }
+
+    @keyframes loading-dots1 {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes loading-dots3 {
+      0% { transform: scale(1); }
+      100% { transform: scale(0); }
+    }
+
+    @keyframes loading-dots2 {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(24px, 0); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 1000px) {
+      .notes-dashboard {
+        gap: 30px;
+      }
+      
+      .box {
+        width: 180px;
+        height: 180px;
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .link-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .link-card {
+        width: 100%;
+        max-width: 400px;
+      }
+      
+      .notes-dashboard {
+        gap: 20px;
+      }
+      
+      .box {
+        width: 150px;
+        height: 150px;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .notes-dashboard {
+        gap: 15px;
+      }
+      
+      .box {
+        width: 130px;
+        height: 130px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Skip link for accessibility */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #fff;
+      color: #000;
+      padding: 8px;
+      z-index: 1000;
+      text-decoration: none;
+    }
+
+    .skip-link:focus {
+      top: 0;
     }
   </style>
 </head>
 <body>
-  <div class="parallax"></div>
-  <main>
-    <div class="hero-box">To-Do List & Calendar</div>
-    <div class="container">
-      <div class="box" onclick="window.open('https://satya7557.github.io/todo-app/', '_blank')">List</div>
-      <div class="box" onclick="window.location.href='calendar-page.html'">Calendar</div>
-      <div class="box" onclick="window.location.href='notes-page.html'">Notes</div>
-      <div class="box" onclick="window.open('https://coggle.it', '_blank')">Mind Map</div>
+  <!-- Skip link for keyboard users -->
+  <a href="#dashboard" class="skip-link">Skip to main content</a>
+
+  <section class="intro-page" id="introPage" aria-label="Introduction">
+    <canvas id="bgCanvas"></canvas>
+    <h1>Productivity Dashboard</h1>
+    <p>Organize. Focus. Achieve.</p>
+    <div class="loading-dots" aria-hidden="true">
+      <div></div><div></div><div></div><div></div>
+    </div>
+  </section>
+
+  <!-- Live background for dashboard -->
+  <div class="live-bg" id="liveBg"></div>
+
+  <main id="dashboard" role="main" aria-label="Dashboard">
+    <div class="dashboard-section">
+      <h2 class="section-title">Productivity Tools</h2>
+      <div class="notes-dashboard">
+        <div class="box" tabindex="0" role="button" aria-label="Open To-Do List" onclick="window.open('https://satya7557.github.io/todo-app/', '_blank')">List</div>
+        <div class="box" tabindex="0" role="button" aria-label="Open Calendar" onclick="window.location.href='calendar-page.html'">Calendar</div>
+        <div class="box" tabindex="0" role="button" aria-label="Open Notes" onclick="window.location.href='notes-page.html'">Notes</div>
+        <div class="box" tabindex="0" role="button" aria-label="Open Mind Map" onclick="window.open('https://coggle.it', '_blank')">Mind Map</div>
+      </div>
+    </div>
+
+    <div class="dashboard-section">
+      <h2 class="section-title">Quick Links</h2>
+      <div class="links-dashboard">
+        <div class="link-row">
+          <div class="link-card youtube" tabindex="0" role="button" aria-label="Open YouTube" onclick="window.open('https://www.youtube.com', '_blank')">
+            <i class="icon fab fa-youtube"></i>
+            <h2>YouTube</h2>
+            <p>Discover and watch videos, music, and live streams</p>
+          </div>
+          
+          <div class="link-card whatsapp" tabindex="0" role="button" aria-label="Open WhatsApp" onclick="window.open('https://web.whatsapp.com', '_blank')">
+            <i class="icon fab fa-whatsapp"></i>
+            <h2>WhatsApp</h2>
+            <p>Send messages and make calls instantly</p>
+          </div>
+          
+          <div class="link-card discord" tabindex="0" role="button" aria-label="Open Discord" onclick="window.open('https://discord.com', '_blank')">
+            <i class="icon fab fa-discord"></i>
+            <h2>Discord</h2>
+            <p>Chat with communities and friends</p>
+          </div>
+        </div>
+        
+        <div class="link-row">
+          <div class="link-card spotify" tabindex="0" role="button" aria-label="Open Spotify" onclick="window.open('https://open.spotify.com', '_blank')">
+            <i class="icon fab fa-spotify"></i>
+            <h2>Spotify</h2>
+            <p>Stream music and podcasts</p>
+          </div>
+          
+          <div class="link-card chatgpt" tabindex="0" role="button" aria-label="Open ChatGPT" onclick="window.open('https://chat.openai.com', '_blank')">
+            <i class="icon fas fa-robot"></i>
+            <h2>ChatGPT</h2>
+            <p>Conversational AI by OpenAI</p>
+          </div>
+          
+          <div class="link-card deepseek" tabindex="0" role="button" aria-label="Open DeepSeek" onclick="window.open('https://www.deepseek.com', '_blank')">
+            <i class="icon fas fa-brain"></i>
+            <h2>DeepSeek</h2>
+            <p>AI-powered search and discovery</p>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
+
+  <script>
+    // Optimized canvas animation for intro
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Simple live black theme effect: moving gradient lines
+    let lines = [];
+    class Line {
+      constructor() {
+        this.reset();
+      }
+      
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.length = Math.random() * 50 + 50;
+        this.speedY = Math.random() * 0.5 + 0.2;
+      }
+      
+      update() {
+        this.y += this.speedY;
+        if(this.y > canvas.height) this.reset();
+      }
+      
+      draw() {
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x, this.y + this.length);
+        ctx.stroke();
+      }
+    }
+
+    // Initialize lines
+    function initLines() {
+      lines = [];
+      const lineCount = Math.min(60, Math.floor(canvas.width * canvas.height / 15000));
+      for(let i = 0; i < lineCount; i++) {
+        lines.push(new Line());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      lines.forEach(line => { 
+        line.update(); 
+        line.draw(); 
+      });
+      animationId = requestAnimationFrame(animate);
+    }
+
+    // Initialize and start animation
+    initLines();
+    animate();
+
+    // Create live background for dashboard
+    function createLiveBackground() {
+      const liveBg = document.getElementById('liveBg');
+      
+      // Create particles
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        const size = Math.random() * 100 + 20;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        particle.style.animationDelay = `${Math.random() * 15}s`;
+        
+        liveBg.appendChild(particle);
+      }
+      
+      // Create pulse effects
+      for (let i = 0; i < 3; i++) {
+        const pulse = document.createElement('div');
+        pulse.classList.add('pulse');
+        
+        pulse.style.left = `${Math.random() * 80}%`;
+        pulse.style.top = `${Math.random() * 80}%`;
+        
+        pulse.style.animationDelay = `${Math.random() * 8}s`;
+        
+        liveBg.appendChild(pulse);
+      }
+    }
+
+    // Handle page transition
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('introPage').style.transform = 'translateY(-100vh)';
+        document.getElementById('dashboard').style.transform = 'translateY(0)';
+        
+        // Create the live background when dashboard appears
+        createLiveBackground();
+        
+        // Clean up animation when intro is hidden
+        setTimeout(() => {
+          cancelAnimationFrame(animationId);
+        }, 1000);
+      }, 3000);
+    });
+
+    // Add keyboard navigation support
+    document.addEventListener('keydown', (e) => {
+      const boxes = document.querySelectorAll('.box, .link-card');
+      const currentIndex = Array.from(boxes).indexOf(document.activeElement);
+      
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % boxes.length;
+        boxes[nextIndex].focus();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + boxes.length) % boxes.length;
+        boxes[prevIndex].focus();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (document.activeElement.classList.contains('box') || 
+            document.activeElement.classList.contains('link-card')) {
+          document.activeElement.click();
+        }
+      } else if (e.key === 'Tab') {
+        // Allow default tab behavior but add visual indication
+        setTimeout(() => {
+          if (document.activeElement.classList.contains('box') || 
+              document.activeElement.classList.contains('link-card')) {
+            document.activeElement.style.boxShadow = '0 0 0 3px rgba(255, 255, 255, 0.7), 0 15px 40px rgba(0,0,0,0.7)';
+            
+            // Remove the highlight when focus is lost
+            setTimeout(() => {
+              if (document.activeElement !== document.activeElement.ownerDocument.activeElement) {
+                document.activeElement.style.boxShadow = '';
+              }
+            }, 100);
+          }
+        }, 10);
+      }
+    });
+  </script>
 </body>
 </html>
