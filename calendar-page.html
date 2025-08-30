@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Calendar</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80' fill='white'>C</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='80' font-size='80' fill='white'%3EC%3C/text%3E%3C/svg%3E">
+'80' fill='white'>C</text></svg>'>">
   <style>
     body, html {
       margin: 0;
@@ -127,7 +128,23 @@
 
   <button id="saveButton">Save All</button>
 
+  <!-- Firebase integration -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBy98kisTApfXa3vWFlUpRB_QAr83VzRqE",
+      authDomain: "mynotesproject-e1e30.firebaseapp.com",
+      projectId: "mynotesproject-e1e30",
+      storageBucket: "mynotesproject-e1e30.firebasestorage.app",
+      messagingSenderId: "498168177749",
+      appId: "1:498168177749:web:f61a75176a86715b97a0dc"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     const calendar = document.getElementById('calendar');
     const monthSelect = document.getElementById('monthSelect');
     const yearSelect = document.getElementById('yearSelect');
@@ -143,7 +160,7 @@
     monthSelect.value = new Date().getMonth();
     yearSelect.value = currentYear;
 
-    function generateCalendar(month, year) {
+    async function generateCalendar(month, year) {
       calendar.innerHTML = '';
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -164,7 +181,14 @@
           const input = document.createElement('input');
           input.type = 'text';
           input.placeholder = `Task ${t+1}`;
-          input.value = localStorage.getItem(`${year}-${month}-${d}-task${t}`) || '';
+
+          // Load from Firestore
+          const docId = `${year}-${month}-${d}-task${t}`;
+          const docRef = db.collection('GitFiles').doc(docId);
+          docRef.get().then(docSnap => {
+            if(docSnap.exists) input.value = docSnap.data().content || '';
+          });
+
           dayDiv.appendChild(input);
         }
 
@@ -193,11 +217,12 @@
         inputs.forEach((input, t) => {
           const d = index + 1 - new Date(yearSelect.value, monthSelect.value, 1).getDay();
           if(d > 0) {
-            localStorage.setItem(`${yearSelect.value}-${monthSelect.value}-${d}-task${t}`, input.value);
+            const docId = `${yearSelect.value}-${monthSelect.value}-${d}-task${t}`;
+            db.collection('GitFiles').doc(docId).set({ content: input.value });
           }
         });
       });
-      alert('All tasks saved!');
+      alert('All tasks saved to cloud!');
     });
   </script>
 </body>
